@@ -1,0 +1,1 @@
+ C:\Users\user\miniconda3\python.exe main.py
