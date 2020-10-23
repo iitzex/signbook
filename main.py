@@ -25,10 +25,13 @@ def parse(fn):
 
 
 def gen(year, month, date, human, typ):
+	year = int(year) - 1911
+	fn = f'簽到本{year}{int(month):02}{int(date):02}.xlsx'
+
 	if typ == '日班':
 		wb = load_workbook(filename = 'template.xlsx')
 	else:
-		wb = load_workbook(filename = f'{month}_{date}.xlsx')
+		wb = load_workbook(filename = fn)
 
 	sheet = wb[typ]
 	sheet[f'A4'] = f'                             日期:{year}年{month}月'
@@ -36,8 +39,8 @@ def gen(year, month, date, human, typ):
 	sheet[f'G26'] = human.values[0]
 
 	index = 6
-	try:
-		for k, i in enumerate(human[1:]):
+	for k, i in enumerate(human[1:]):
+		try:
 			if '(' in i:
 				ojt = i[:2]
 				atc = i[3:5] 
@@ -49,13 +52,13 @@ def gen(year, month, date, human, typ):
 			sheet[f'D{k+index}'] = ojt
 			sheet[f'F{k+index}'] = atc
 
-	except TypeError as e:
-		# print(f'D{k+index}', '')    
-		# print(f'F{k+index}', '!!')
-		sheet[f'D{k+index}'] = ''
-		sheet[f'F{k+index}'] = '!!'
+		except TypeError as e:
+			# print(f'D{k+index}', '')    
+			# print(f'F{k+index}', '!!')
+			sheet[f'D{k+index}'] = ''
+			sheet[f'F{k+index}'] = '  '
 
-	wb.save(filename = f'{month}_{date}.xlsx')
+	wb.save(filename = fn)
 
 if __name__ == '__main__':
 	for name in glob.glob('GR0R00005*'):
